@@ -2,14 +2,18 @@
 
 declare(strict_types=1);
 
-return PhpCsFixer\Config::create()
+$config = new \PhpCsFixer\Config();
+
+$config
     ->setRules([
+        // Rule sets
+        '@PHP74Migration:risky' => true,
+        '@PHP80Migration' => true,
+        '@PSR2' => true,
+        '@PSR12' => true,
         '@Symfony' => true,
         '@Symfony:risky' => true,
-        '@PSR2' => true,
-        '@PHP71Migration' => true,
-        '@PHP71Migration:risky' => true,
-        '@PHP73Migration' => true,
+        // Individual rules
         'array_syntax' => ['syntax' => 'short'],
         'protected_to_private' => false,
         'compact_nullable_typehint' => true,
@@ -18,7 +22,7 @@ return PhpCsFixer\Config::create()
     ])
     ->setRiskyAllowed(true)
     ->setFinder(
-        PhpCsFixer\Finder::create()
+        \PhpCsFixer\Finder::create()
             ->in([
                 __DIR__ . '/src',
                 __DIR__ . '/config',
@@ -26,3 +30,5 @@ return PhpCsFixer\Config::create()
             ->notPath('#c3.php#')
             ->append([__FILE__])
     );
+
+return $config;

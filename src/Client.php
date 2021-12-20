@@ -9,24 +9,20 @@ use League\OAuth2\Client\Token\AccessTokenInterface;
 
 class Client
 {
-    /** @var GenericProvider */
-    private $provider;
+    private GenericProvider $provider;
 
-    /** @var string */
-    private $state = null;
+    private ?string $state = null;
 
-    /** @var string */
-    private $token = null;
+    private ?string $token = null;
 
-    /** @var string */
-    private $redirectUrlSuffix = '';
+    private string $redirectUrlSuffix = '';
 
     public function connect(): self
     {
         $this->provider = new GenericProvider([
             'clientId' => config('visma.client_id'),
             'clientSecret' => config('visma.client_secret'),
-            'redirectUri' => config('visma.redirect_uri').$this->getRedirectUrlSuffix(),
+            'redirectUri' => config('visma.redirect_uri') . $this->redirectUrlSuffix,
             'urlAuthorize' => $this->getUrlAuthorize(),
             'urlAccessToken' => $this->getUrlAccessToken(),
             'urlResourceOwnerDetails' => '',
@@ -37,7 +33,7 @@ class Client
 
     public function getProvider(): GenericProvider
     {
-        if (empty($this->provider)) {
+        if (!isset($this->provider)) {
             $this->connect();
         }
 
@@ -77,7 +73,7 @@ class Client
         return (string) config('visma.sandbox.token_url');
     }
 
-    public function getState(): string
+    public function getState(): ?string
     {
         return $this->state;
     }
@@ -87,7 +83,7 @@ class Client
         $this->state = $state;
     }
 
-    public function getToken(): string
+    public function getToken(): ?string
     {
         return $this->token;
     }
@@ -95,15 +91,5 @@ class Client
     public function setToken(string $token): void
     {
         $this->token = $token;
-    }
-
-    public function getRedirectUrlSuffix()
-    {
-        return $this->redirectUrlSuffix;
-    }
-
-    public function setRedirectUrlSuffix($suffix)
-    {
-        return $this->redirectUrlSuffix = $suffix;
     }
 }

@@ -8,10 +8,9 @@ use Illuminate\Support\Collection;
 
 class FiscalYear extends BaseEntity
 {
-    /** @var string */
-    protected $endpoint = '/fiscalyears';
+    protected string $endpoint = '/fiscalyears';
 
-    public function index(): collection
+    public function index(): Collection
     {
         return $this->baseIndex();
     }

@@ -8,10 +8,9 @@ use Illuminate\Support\Collection;
 
 class Account extends BaseEntity
 {
-    /** @var string */
-    protected $endpoint = '/accounts';
+    protected string $endpoint = '/accounts';
 
-    public function index(): collection
+    public function index(): Collection
     {
         return $this->baseIndex();
     }

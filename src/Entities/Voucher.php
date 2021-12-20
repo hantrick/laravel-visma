@@ -5,38 +5,34 @@ declare(strict_types=1);
 namespace Webparking\LaravelVisma\Entities;
 
 use Illuminate\Support\Collection;
-use VoucherRow;
 
 /**
- * Class Voucher
- *
- * @property string $VoucherDate
- * @property string $VoucherText
+ * @property string       $VoucherDate
+ * @property string       $VoucherText
  * @property VoucherRow[] $Rows
- * @property string $ModifiedUtc
- * @property integer $VoucherType
- * @property string $NumberSeries
- *
- * @package Webparking\LaravelVisma\Entities
+ * @property string       $ModifiedUtc
+ * @property int          $VoucherType
+ * @property string       $NumberSeries
  */
 class Voucher extends BaseEntity
 {
-    /** @var string */
-    protected $endpoint = '/vouchers';
+    protected string $endpoint = '/vouchers';
 
-    public function index(string $fiscalYearId): collection
+    public function index(string $fiscalYearId): Collection
     {
         $this->endpoint .= '/' . $fiscalYearId;
 
         return $this->baseIndex();
     }
 
-    public function save()
+    public function save(): object
     {
         $queryParams = [];
-        if(isset($this->NumberSeries)) {
-            $queryParams['useDefaultVoucherSeries'] = "false";
+
+        if (isset($this->NumberSeries)) {
+            $queryParams['useDefaultVoucherSeries'] = 'false';
         }
+
         return $this->basePost($this, $queryParams);
     }
 }

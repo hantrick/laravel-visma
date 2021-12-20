@@ -4,24 +4,22 @@ declare(strict_types=1);
 
 namespace Webparking\LaravelVisma\Entities;
 
-use function GuzzleHttp\Psr7\build_query;
+use GuzzleHttp\Psr7\Query;
 use Illuminate\Support\Collection;
 use Webparking\LaravelVisma\Client;
 
 abstract class BaseEntity
 {
-    /*** @var Client */
-    protected $client;
+    protected Client $client;
 
-    /** @var string */
-    protected $endpoint;
+    protected string $endpoint;
 
     public function __construct(Client $client)
     {
         $this->client = $client;
     }
 
-    protected function baseIndex($queryParams = []): collection
+    protected function baseIndex(array $queryParams = []): Collection
     {
         $finished = false;
         $currentPage = 1;
@@ -47,16 +45,16 @@ abstract class BaseEntity
         return collect($data);
     }
 
-    protected function basePost($object, $queryParams = []): object
+    protected function basePost(object $object, array $queryParams = []): object
     {
         $arr = (array) $object;
-        foreach($arr as $key => $value) {
-            if(!isset($value)) {
+        foreach ($arr as $key => $value) {
+            if (!isset($value)) {
                 unset($arr[$key]);
             }
         }
         $options = [];
-        $options['body'] = json_encode( $arr );
+        $options['body'] = json_encode($arr);
         $options['headers']['Content-Type'] = 'application/json';
         $options['headers']['Accept'] = 'application/json';
         $request = $this->client->getProvider()->getAuthenticatedRequest(
@@ -89,21 +87,20 @@ abstract class BaseEntity
         return (string) config('visma.sandbox.api_url');
     }
 
-    private function buildUri(int $currentPage, $extraParams = [], $postUrl = false): string
+    private function buildUri(int $currentPage, array $extraParams = [], bool $postUrl = false): string
     {
         $url = $this->getUrlAPI() . $this->getEndpoint();
-        if($postUrl) {
-            $url .= '?' . build_query($extraParams, false);
-        } else {
-            $url .= '?' . build_query(array_merge(['$page' => $currentPage, '$pagesize' => 100], $extraParams), false);
+
+        if ($postUrl) {
+            return $url . '?' . Query::build($extraParams, false);
         }
 
-        return $url;
+        return $url . '?' . Query::build(array_merge(['$page' => $currentPage, '$pagesize' => 100], $extraParams), false);
     }
 
     private function getEndpoint(): string
     {
-        if (null === $this->endpoint) {
+        if (!isset($this->endpoint)) {
             throw new \RuntimeException('Endpoint not set!');
         }
 
