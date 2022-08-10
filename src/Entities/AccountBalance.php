@@ -9,10 +9,9 @@ use Illuminate\Support\Collection;
 
 class AccountBalance extends BaseEntity
 {
-    /** @var string */
-    protected $endpoint = '/accountbalances';
+    protected string $endpoint = '/accountbalances';
 
-    public function get(Carbon $date, string $accountNumber): ?object
+    public function get(Carbon $date, string $accountNumber): object
     {
         $this->endpoint .= '/' . $accountNumber;
         $this->endpoint .= '/' . $date->format('Y-m-d');
@@ -20,7 +19,7 @@ class AccountBalance extends BaseEntity
         return $this->baseGet();
     }
 
-    public function index(Carbon $date): collection
+    public function index(Carbon $date): Collection
     {
         $this->endpoint .= '/' . $date->format('Y-m-d');
 

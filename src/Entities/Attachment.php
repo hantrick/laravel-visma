@@ -7,58 +7,52 @@ namespace Webparking\LaravelVisma\Entities;
 use Illuminate\Support\Collection;
 
 /**
- * Class Attachment
- *
  * @property string $Id
- * @property string $ContentType - either image/jpeg, image/png, image/tif or application/pdf
+ * @property string $ContentType           - either image/jpeg, image/png, image/tif or application/pdf
  * @property string $FileName
- * @property string $Data - Optional. Base64 encoded data.
- * @property string $Url - Optional (can be used as alternative to $Data). Public URL to the asset.
+ * @property string $Data                  - Optional. Base64 encoded data.
+ * @property string $Url                   - Optional (can be used as alternative to $Data). Public URL to the asset.
  * @property string $DocumentId
- * @property integer $AttachedDocumentType - 0 = None, 1 = SupplierInvoice, 2 = Receipt, 3 = Voucher, 4 = SupplierInvoiceDraft, 5 = AllocationPeriod, 6 = Transfer
+ * @property int    $AttachedDocumentType  - 0 = None, 1 = SupplierInvoice, 2 = Receipt, 3 = Voucher, 4 = SupplierInvoiceDraft, 5 = AllocationPeriod, 6 = Transfer
  * @property string $TemporaryUrl
  * @property string $Comment
  * @property string $SupplierName
- * @property double $AmountInvoiceCurrency
- * @property integer $Type 0 = Invoice, 1 = Receipt, 2 = Document
- * @property integer $AttachmentStatus 0 = Matched, 1 = Unmatched
+ * @property float  $AmountInvoiceCurrency
+ * @property int    $Type                  0 = Invoice, 1 = Receipt, 2 = Document
+ * @property int    $AttachmentStatus      0 = Matched, 1 = Unmatched
  * @property string $UploadedBy
  * @property string $ImageDate
- *
- * @package Webparking\LaravelVisma\Entities
  */
 class Attachment extends BaseEntity
 {
-    /** @var string */
-    protected $endpoint = '/attachments';
+    protected string $endpoint = '/attachments';
 
-    public function index(bool $includeMatched, bool $includeTemporaryUrl): collection
+    public function index(bool $includeMatched, bool $includeTemporaryUrl): Collection
     {
-        $queryParams = [];
-        if(isset($includeMatched)) {
-            $queryParams['includeMatched'] = $includeMatched;
-        }
-        if(isset($includeTemporaryUrl)) {
-            $queryParams['includeTemporaryUrl'] = $includeTemporaryUrl;
-        }
+        $queryParams = [
+            'includeMatched' => $includeMatched,
+            'includeTemporaryUrl' => $includeTemporaryUrl,
+        ];
+
         return $this->baseIndex($queryParams);
     }
 
-    public function save()
+    public function save(): object
     {
-        $queryParams = [];
-        return $this->basePost($this, $queryParams);
+        return $this->basePost($this);
     }
 
-    public function get(string $attachmentId): Attachment
+    public function get(string $attachmentId): self
     {
-        $originatingEndpoint  = $this->endpoint;
+        $originatingEndpoint = $this->endpoint;
         $this->endpoint .= '/' . $attachmentId;
         $attachmentData = $this->baseGet();
         $this->endpoint = $originatingEndpoint;
-        foreach($attachmentData as $key => $value) {
+
+        foreach ($attachmentData as $key => $value) {
             $this->$key = $value;
         }
+
         return $this;
     }
 }
