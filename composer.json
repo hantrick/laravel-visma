@@ -1,10 +1,10 @@
 {
-  "name": "webparking/laravel-visma",
+  "name": "hantrick/laravel-visma",
   "description": "Laravel API helper for Visma eAccounting",
   "license": "MIT",
   "require": {
     "php": ">=7.4",
-    "laravel/framework": "^5.5 || ^6.0 || ^7.0 || ^8.0",
+    "laravel/framework": "^5.5 || ^6.0 || ^7.0 || ^8.0 || ^9.0",
     "league/oauth2-client": "^2.4",
     "ext-json": "*"
   },
